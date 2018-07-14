@@ -17,7 +17,6 @@ def login(request):
     if request.method == 'POST':
         ob = request.POST.dict()
         user = User._filter(**{"user_id" : ob["user_id"]})["data"]
-        print User._filter()
         if not len(user):
             messages.add_message(request, messages.INFO, 'User not registred')
         elif user[0]["password"] != ob["password"]:
@@ -39,8 +38,6 @@ def logout(request):
 def signup(request):
     if request.method == 'POST':
         try:
-            print User._filter()
-            print request.POST.dict()
             obj = User._create(**request.POST.dict())
             messages.add_message(request, messages.SUCCESS, 'User created successfully')
             return redirect("/login")
