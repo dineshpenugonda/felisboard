@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Dashboard | felisboard</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="{% static 'images/icons/favicon.ico' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'fonts/Linearicons-Free-v1.0.0/icon-font.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animsition/css/animsition.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/daterangepicker/daterangepicker.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-fixed-top" style="background-color:#e1edf1">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="javascript:void(0)">Felisboard</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout"><span class="fa  fa-sign-out"></span> Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container" style="margin-top:50px">
+        <div class="row">
+            <div class="col-md-10 col-sm-12">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            <strong>{{ message.tags | title}}! </strong>{{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+
+                <div class="row">
+                    {% for i in data %}
+                        <div class="col-md-4 col-sm-12">
+                            <div class="card" style="width:100%; margin-bottom:10px">
+                                <img class="card-img-top" src="/{{i.image_url}}" alt="Card image" height="200px">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{i.name}}</h4>
+                                    <p class="card-text">{{i.description}}</p>
+                                </div>
+                                <div class="card-footer actions">
+                                    <a href="javascript:void(0)" class="action {% if i.reaction_type == "Like" %}selected{% endif %}" reaction-type="Like" reaction-id="{{i.reaction_id}}" post-id="{{i.post_id}}">
+                                        <i class="fa fa-thumbs-up"></i> Like
+                                    </a>
+                                    <a href="javascript:void(0)" class="action {% if i.reaction_type == "Dislike" %}selected{% endif %}" reaction-type="Dislike" reaction-id="{{i.reaction_id}}" post-id="{{i.post_id}}">
+                                        <i class="fa fa-thumbs-down"></i> Dislike
+                                    </a>
+                                    <span class="pull-right">
+                                        {% if i.likes %}
+                                            <a href="javascript:void(0)" class="action" type="count" reaction-type="Like" post-id="{{i.post_id}}">
+                                                {{i.likes}} Likes
+                                            </a>
+                                        {% endif %}
+
+                                        {% if i.dislikes %}
+                                            <a href="javascript:void(0)" class="action" type="count" reaction-type="Dislike" post-id="{{i.post_id}}">
+                                                {{i.dislikes}} Dislikes
+                                            </a>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-12 pull-right">
+                <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#popup"><i class="fa fa-upload"></i> Upload a pic</button>
+            </div>
+            <div class="modal" id="popup">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h4 class="modal-title">Upload a pic</h4>
+                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      </div>
+
+                    <form action="/upload-post" method="POST"  enctype="multipart/form-data">
+                        <div class="modal-body">
+                              <div class="form-group">
+                                <label class="custom-file-label" for="post_image">Choose file</label>
+                                <input type="file" class="form-control" name="post_image" id="customFile" accept="image/*" required>
+                              </div>
+                              <div class="form-group">
+                                  <label for="description">Description:</label>
+                                  <textarea class="form-control" rows="5" id="description" name="description" required></textarea>
+                              </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-upload"></i> Upload</button>
+                        </div>
+                    </form>
+
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+	<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+	<script src="{% static 'vendor/animsition/js/animsition.min.js' %}"></script>
+	<script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
+	<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'vendor/select2/select2.min.js' %}"></script>
+	<script src="{% static 'vendor/daterangepicker/moment.min.js' %}"></script>
+	<script src="{% static 'vendor/daterangepicker/daterangepicker.js' %}"></script>
+	<script src="{% static 'vendor/countdowntime/countdowntime.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        $(function(){
+            $(".actions").each(function(){
+                $(this).find(".action").each(function(){
+
+                    $(this).focus(function(){
+                         var ele = this;
+                         if($(this).attr("type") == "count"){
+                            var data = {
+                                "reaction_type" : $(this).attr("reaction-type"),
+                                "post_id" : $(this).attr("post-id")
+                            }
+                            $.ajax({
+                                "method" : "get",
+                                "url" : "/get-reaction",
+                                "data": data,
+                                "success":function(data){
+                                    console.log(data)
+                                    var tx = "";
+                                    for(var i in data["data"]){
+                                        tx += data["data"][i]["reacted_user"]+"<br>"
+                                    }
+                                    $(ele).popover({content: tx, html:true}).popover('show');
+                                }
+                            })
+                        }                   
+                    })
+                    $(this).blur(function(){
+                         if($(this).attr("type") == "count"){
+                            $(this).popover('hide');
+                         }                   
+                    })
+
+                    $(this).click(function(){
+                        if($(this).attr("type") != "count"){
+                            $(this).parent().find(".action").each(function(){ $(this).removeClass("selected") })
+                            $(this).addClass("selected")
+                            var data = {
+                                "reaction_type" : $(this).attr("reaction-type"),
+                                "reaction_id" : $(this).attr("reaction-id"),
+                                "post_id" : $(this).attr("post-id")
+                            }
+                            $.ajax({
+                                "method" : "post",
+                                "url" : "/reaction",
+                                "data": JSON.stringify(data),
+                                "dataType" : "json",
+                                    "Content-Type" : "application/json",
+                                "success":function(data){
+                                    console.log(data)
+                                }
+                            })
+                        }
+                    })
+                })
+            })
+        });
+    </script>
+</body>
+</html>
